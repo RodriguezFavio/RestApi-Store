@@ -10,7 +10,7 @@ class ProductService {
         id: productData.string.uuid(),
         name: productData.commerce.productName(),
         price: parseInt(productData.commerce.price(), 10),
-        image: productData.image.imageUrl(),
+        image: productData.image.url(),
       });
 
       products.push(product);
