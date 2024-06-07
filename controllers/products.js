@@ -1,5 +1,7 @@
 const { faker } = require('@faker-js/faker');
 
+const Product = require('../model/products');
+
 const ProductService = require('../service/products');
 
 exports.getProducts = async (req, res, next) => {
@@ -23,6 +25,18 @@ exports.getProduct = async (req, res, next) => {
     }
 
     res.status(200).json(product);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json(err.message);
+  }
+};
+
+exports.postProduct = async (req, res, next) => {
+  try {
+    const { body } = req;
+    const product = new Product(body);
+
+    res.status(201).json(product);
   } catch (err) {
     console.log(err);
     res.status(500).json(err.message);
