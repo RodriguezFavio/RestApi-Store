@@ -1,8 +1,8 @@
 const Product = require('../model/product');
+const products = [];
 
 class ProductService {
   static async createProduct(productData, size) {
-    const products = [];
     const limit = size || 10;
 
     for (let index = 0; index < limit; index++) {
@@ -17,6 +17,10 @@ class ProductService {
     }
 
     return products;
+  }
+
+  static findById(id) {
+    return products.find((product) => product.id === id);
   }
 }
 
