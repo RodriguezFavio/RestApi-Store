@@ -1,4 +1,4 @@
-const Product = require('../model/product');
+const Product = require('../model/products');
 const products = [];
 
 class ProductService {

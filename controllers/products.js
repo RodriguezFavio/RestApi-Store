@@ -1,6 +1,6 @@
 const { faker } = require('@faker-js/faker');
 
-const ProductService = require('../service/productService');
+const ProductService = require('../service/products');
 
 exports.getProducts = async (req, res, next) => {
   try {
