@@ -1,14 +1,17 @@
 const express = require('express');
 
 const productController = require('../controllers/products');
-const { APISTORE } = process.env;
 
 const router = express.Router();
 
-router.get(`${APISTORE}/products`, productController.getProducts);
+router.get('/products', productController.getProducts);
 
-router.get(`${APISTORE}/products/:id`, productController.getProduct);
+router.get('/products/:id', productController.getProduct);
 
-router.post(`${APISTORE}/products`, productController.postProduct);
+router.post('/products', productController.postProduct);
+
+router.patch('/products/:id', productController.updateProduct);
+
+router.delete('/products/:id', productController.deleteProduct);
 
 module.exports = router;
