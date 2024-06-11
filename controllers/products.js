@@ -1,15 +1,15 @@
 const ProductService = require('../service/products');
-const { products } = require('../database/data');
+
+const service = new ProductService();
 
 exports.getProducts = async (req, res, next) => {
   try {
-    const products = await ProductService.getProducts();
+    const products = await service.getProducts();
     if (!products) {
       return res.status(404).json({ message: 'No products found' });
     }
     res.status(200).json(products);
   } catch (err) {
-    console.log(err);
     res.status(500).json(err.message);
   }
 };
@@ -17,14 +17,13 @@ exports.getProducts = async (req, res, next) => {
 exports.getProduct = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const product = await ProductService.findById(id);
+    const product = await service.findById(id);
     if (!product) {
       res.status(404).json({ message: 'Product not found' });
     }
 
     res.status(200).json(product);
   } catch (err) {
-    console.log(err);
     res.status(500).json(err.message);
   }
 };
@@ -32,10 +31,9 @@ exports.getProduct = async (req, res, next) => {
 exports.postProduct = async (req, res, next) => {
   try {
     const { body } = req;
-    const product = ProductService.addProduct(body);
+    const product = await service.addProduct(body);
     res.status(201).json(product);
   } catch (err) {
-    console.log(err);
     res.status(500).json(err.message);
   }
 };
@@ -45,13 +43,12 @@ exports.updateProduct = async (req, res, next) => {
     const { id } = req.params;
     const updateData = req.body;
 
-    const updatedProduct = await ProductService.updateProduct(id, updateData);
+    const updatedProduct = await service.updateProduct(id, updateData);
     if (!updatedProduct) {
       res.status(404).json({ message: 'Product not found' });
     }
     res.status(201).json(updatedProduct);
   } catch (err) {
-    console.log(err);
     res.status(500).json(err.message);
   }
 };
@@ -59,13 +56,12 @@ exports.updateProduct = async (req, res, next) => {
 exports.deleteProduct = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const product = await ProductService.deleteProduct(id);
+    const product = await service.deleteProduct(id);
     if (!product) {
       res.status(404).json({ message: 'Product not found' });
     }
-    res.status(200).json({ message: 'Product deleted successfully' });
+    res.status(200).json({ message: 'Product deleted successfully', product });
   } catch (err) {
-    console.log(err);
     res.status(500).json(err.message);
   }
 };
