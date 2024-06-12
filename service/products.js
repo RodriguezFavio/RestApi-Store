@@ -1,6 +1,7 @@
 const { faker } = require('@faker-js/faker');
 
 const Product = require('../model/products');
+const APIError = require('../utils/error');
 
 class ProductService {
   constructor() {
@@ -41,7 +42,7 @@ class ProductService {
   async updateProduct(id, updateData) {
     const product = await this.findById(id);
     if (!product) {
-      throw new Error('product not found');
+      throw new APIError(404, 'Product Not Found!');
     }
 
     Object.assign(product, updateData);
@@ -53,7 +54,7 @@ class ProductService {
     const product = await this.findById(id);
 
     if (!product) {
-      throw new Error('product not found');
+      throw new APIError(404, 'Product Not Found!');
     }
     const index = this.products.indexOf(product);
     this.products.splice(index, 1);
