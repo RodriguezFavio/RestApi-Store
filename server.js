@@ -1,11 +1,25 @@
 const express = require('express');
+const cors = require('cors');
 require('dotenv').config();
 
 const productRoutes = require('./routes/products');
 const { errorMiddleware } = require('./middleware/error');
 
 const app = express();
-const { PORT, APISTORE } = process.env;
+
+const { PORT, APISTORE, WHITE_LIST } = process.env;
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (WHITE_LIST.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+};
+
+app.use(cors(corsOptions));
 
 app.use(express.json());
 
