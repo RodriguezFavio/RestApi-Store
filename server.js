@@ -11,7 +11,7 @@ const { PORT, APISTORE, WHITE_LIST } = process.env;
 
 const corsOptions = {
   origin: (origin, callback) => {
-    if (WHITE_LIST.includes(origin)) {
+    if (WHITE_LIST.includes(origin) || !origin) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
@@ -27,4 +27,4 @@ app.use(`${APISTORE}`, productRoutes);
 
 app.use(errorMiddleware);
 
-app.listen(PORT);
+app.listen(PORT || 3000);
