@@ -1,11 +1,10 @@
 const ProductService = require('../service/products');
 const APIError = require('../utils/error');
 
-const service = new ProductService();
-
 exports.getProducts = async (req, res, next) => {
   try {
-    const products = await service.getProducts();
+    const query = req.query;
+    const products = await ProductService.find(query);
     if (!products) {
       throw new APIError(404, 'Products List Not Found!');
     }
@@ -18,7 +17,7 @@ exports.getProducts = async (req, res, next) => {
 exports.getProduct = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const product = await service.findById(id);
+    const product = await ProductService.findById(id);
     if (!product) {
       throw new APIError(404, 'Product Not Found!');
     }
@@ -32,7 +31,7 @@ exports.getProduct = async (req, res, next) => {
 exports.postProduct = async (req, res, next) => {
   try {
     const { body } = req;
-    const product = await service.addProduct(body);
+    const product = await ProductService.create(body);
     res.status(201).json(product);
   } catch (err) {
     next(err);
@@ -44,7 +43,7 @@ exports.updateProduct = async (req, res, next) => {
     const { id } = req.params;
     const updateData = req.body;
 
-    const updatedProduct = await service.updateProduct(id, updateData);
+    const updatedProduct = await ProductService.update(id, updateData);
     if (!updatedProduct) {
       throw new APIError(404, 'Product Not Found!');
     }
@@ -57,7 +56,7 @@ exports.updateProduct = async (req, res, next) => {
 exports.deleteProduct = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const product = await service.deleteProduct(id);
+    const product = await ProductService.delete(id);
     if (!product) {
       throw new APIError(404, 'Product Not Found!');
     }
