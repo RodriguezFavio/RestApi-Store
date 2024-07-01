@@ -6,11 +6,16 @@ const {
   addProductSchema,
   updateProductSchema,
   getProductSchema,
+  queryProductSchema,
 } = require('../schemas/products');
 
 const router = express.Router();
 
-router.get('/products', productController.getProducts);
+router.get(
+  '/products',
+  validatorHandler(queryProductSchema, 'query'),
+  productController.getProducts
+);
 
 router.get(
   '/products/:id',

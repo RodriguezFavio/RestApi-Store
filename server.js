@@ -3,6 +3,10 @@ const cors = require('cors');
 require('dotenv').config();
 
 const productRoutes = require('./routes/products');
+const userRoutes = require('./routes/users');
+const customerRoutes = require('./routes/customers');
+const categoryRoutes = require('./routes/categories');
+const orderRoutes = require('./routes/orders');
 const { errorMiddleware } = require('./middleware/error');
 
 const app = express();
@@ -23,7 +27,15 @@ app.use(cors(corsOptions));
 
 app.use(express.json());
 
+app.use(`${APISTORE}`, categoryRoutes);
+
 app.use(`${APISTORE}`, productRoutes);
+
+app.use(`${APISTORE}`, userRoutes);
+
+app.use(`${APISTORE}`, customerRoutes);
+
+app.use(`${APISTORE}`, orderRoutes);
 
 app.use(errorMiddleware);
 
