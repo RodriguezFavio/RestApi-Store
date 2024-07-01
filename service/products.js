@@ -1,64 +1,58 @@
-const { faker } = require('@faker-js/faker');
-
-const Product = require('../model/products');
+const { models } = require('../libs/sequelize');
+const { Op } = require('sequelize');
 const APIError = require('../utils/error');
 
 class ProductService {
-  constructor() {
-    this.products = [];
-    this.generate();
-  }
-
-  generate() {
-    const limit = 10;
-
-    for (let index = 0; index < limit; index++) {
-      const product = new Product({
-        id: faker.string.uuid(),
-        name: faker.commerce.productName(),
-        price: parseInt(faker.commerce.price(), 10),
-        image: faker.image.url(),
-      });
-
-      this.products.push(product);
+  static async find(query) {
+    const options = {
+      include: ['category'],
+      where: {},
+    };
+    const { limit, offset, price, price_min, price_max } = query;
+    if (limit && offset) {
+      options.limit = limit;
+      options.offset = offset;
     }
+    if (price) {
+      options.where.price = price;
+    }
+    if (price_min && price_max) {
+      options.where.price = {
+        [Op.between]: [price_min, price_max],
+      };
+    }
+
+    const products = await models.Product.findAll(options);
+
+    return products;
   }
 
-  async getProducts() {
-    return this.products;
-  }
-
-  async findById(id) {
-    return this.products.find((product) => product.id === id);
-  }
-
-  async addProduct(productData) {
-    const id = faker.string.uuid();
-    const product = new Product({ id, ...productData });
-    this.products.push(product);
-    return product;
-  }
-
-  async updateProduct(id, updateData) {
-    const product = await this.findById(id);
+  static async findById(id) {
+    const product = await models.Product.findByPk(id);
     if (!product) {
-      throw new APIError(404, 'Product Not Found!');
+      throw new APIError(404, 'Product not found');
     }
+    return product;
+  }
 
-    Object.assign(product, updateData);
+  static async create(productData) {
+    const product = await models.Product.create(productData);
 
     return product;
   }
 
-  async deleteProduct(id) {
+  static async update(id, updateData) {
     const product = await this.findById(id);
+    const result = await product.update(updateData);
 
-    if (!product) {
-      throw new APIError(404, 'Product Not Found!');
-    }
-    const index = this.products.indexOf(product);
-    this.products.splice(index, 1);
-    return product;
+    return result;
+  }
+
+  static async deleteProduct(id) {
+    const product = await this.findById(id);
+    const result = await product.destroy();
+
+    return result;
   }
 }
 
