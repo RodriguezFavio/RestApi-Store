@@ -1,7 +1,9 @@
 const express = require('express');
+const passport = require('passport');
 
 const categoriesControllers = require('../controllers/categories');
 const validatorHandler = require('../middleware/validator');
+const { checkRole } = require('../middleware/auth');
 const {
   getCategorySchema,
   createCategorySchema,
@@ -20,17 +22,26 @@ router.get(
 
 router.post(
   '/categories',
+  passport.authenticate('jwt', { session: false }),
+  checkRole('admin'),
   validatorHandler(createCategorySchema, 'body'),
   categoriesControllers.postCategory
 );
 
 router.patch(
   '/categories/:id',
+  passport.authenticate('jwt', { session: false }),
+  checkRole('admin'),
   validatorHandler(getCategorySchema, 'params'),
   validatorHandler(updateCategorySchema, 'body'),
   categoriesControllers.updateCategory
 );
 
-router.delete('/categories/:id', categoriesControllers.deleteCategory);
+router.delete(
+  '/categories/:id',
+  passport.authenticate('jwt', { session: false }),
+  checkRole('admin'),
+  categoriesControllers.deleteCategory
+);
 
 module.exports = router;

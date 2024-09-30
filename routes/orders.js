@@ -1,4 +1,5 @@
 const express = require('express');
+const passport = require('passport');
 
 const ordersControllers = require('../controllers/orders');
 const validatorHandler = require('../middleware/validator');
@@ -19,18 +20,17 @@ router.get(
 );
 
 router.post(
-  '/orders/add-item',
-  validatorHandler(addItemSchema, 'body'),
+  '/orders',
+  passport.authenticate('jwt', { session: false }),
+  // validatorHandler(createOrderSchema, 'body'),
   ordersControllers.postOrder
 );
 
-// router.patch(
-//   '/orders/:id',
-//   validatorHandler(getOrderSchema, 'params'),
-//   validatorHandler(updateCustomerSchema, 'body'),
-//   ordersControllers.updateCustomer
-// );
-
-// router.delete('/orders/:id', ordersControllers.deleteCustomer);
+router.post(
+  '/orders/add-item',
+  passport.authenticate('jwt', { session: false }),
+  validatorHandler(addItemSchema, 'body'),
+  ordersControllers.postAddItem
+);
 
 module.exports = router;
