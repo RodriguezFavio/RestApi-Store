@@ -9,6 +9,23 @@ class OrderService {
     return newOrder;
   }
 
+  static async createBySub(data) {
+    const customer = await models.Customer.findOne({
+      where: {
+        '$user.id$': data.userId,
+      },
+      include: ['user'],
+    });
+
+    if (!customer) {
+      throw new APIError(404, 'Customer not found');
+    }
+
+    const newOrder = await models.Order.create({ customerId: customer.id });
+
+    return newOrder;
+  }
+
   static async addItem(data) {
     const newItem = await models.OrderProduct.create(data);
     return newItem;
@@ -16,6 +33,23 @@ class OrderService {
 
   static async find() {
     const result = await models.Order.findAll({
+      include: [
+        {
+          association: 'customer',
+          include: ['user'],
+        },
+        {
+          association: 'items',
+          attributes: ['id', 'name', 'price'],
+        },
+      ],
+    });
+    return result;
+  }
+
+  static async findByUser(userId) {
+    const result = await models.Order.findAll({
+      where: { '$customer.user.id$': userId },
       include: [
         {
           association: 'customer',
@@ -33,10 +67,11 @@ class OrderService {
           association: 'customer',
           attributes: ['id', 'name'],
           include: [
-            {
-              association: 'user',
-              attributes: ['id', 'email'],
-            },
+            'user',
+            // {
+            //   association: 'user',
+            //   attributes: ['id', 'email'],
+            // },
           ],
         },
         {

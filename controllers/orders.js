@@ -23,6 +23,19 @@ exports.getOrder = async (req, res, next) => {
 
 exports.postOrder = async (req, res, next) => {
   try {
+    const body = {
+      userId: req.user.sub,
+    };
+    const order = await OrderService.createBySub(body);
+
+    res.status(201).json({ message: 'created order successfully', order });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.postAddItem = async (req, res, next) => {
+  try {
     const { body } = req;
     const order = await OrderService.addItem(body);
 
