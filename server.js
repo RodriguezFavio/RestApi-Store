@@ -6,7 +6,9 @@ const productRoutes = require('./routes/products');
 const userRoutes = require('./routes/users');
 const customerRoutes = require('./routes/customers');
 const categoryRoutes = require('./routes/categories');
+const authRoutes = require('./routes/auth');
 const orderRoutes = require('./routes/orders');
+const profileRoutes = require('./routes/profile');
 const { errorMiddleware } = require('./middleware/error');
 
 const app = express();
@@ -25,6 +27,8 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
+require('./utils/auth');
+
 app.use(express.json());
 
 app.use(`${APISTORE}`, categoryRoutes);
@@ -36,6 +40,10 @@ app.use(`${APISTORE}`, userRoutes);
 app.use(`${APISTORE}`, customerRoutes);
 
 app.use(`${APISTORE}`, orderRoutes);
+
+app.use(`${APISTORE}`, authRoutes);
+
+app.use(`${APISTORE}`, profileRoutes);
 
 app.use(errorMiddleware);
 
